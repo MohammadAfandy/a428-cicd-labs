@@ -17,7 +17,9 @@ pipeline {
             }
         }
         stage('Manual Approval') {
-            input(message: 'Lanjutkan ke tahap Deploy?', ok: 'Deploy')
+            steps {
+                input(message: 'Lanjutkan ke tahap Deploy?', ok: 'Deploy')
+            }
         }
         stage('Deploy') { 
             def sleepTime = 1 * 60 // 1 minute
