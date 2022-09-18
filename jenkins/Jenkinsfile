@@ -16,10 +16,15 @@ pipeline {
                 sh './jenkins/scripts/test.sh'
             }
         }
+        stage('Manual Approval') {
+            input(message: 'Lanjutkan ke tahap Deploy?', ok: 'Deploy')
+        }
         stage('Deploy') { 
+            def sleepTime = 1 * 60 // 1 minute
             steps {
                 sh './jenkins/scripts/deliver.sh' 
-                input message: 'Sudah selesai menggunakan React App? (Klik "Proceed" untuk mengakhiri)' 
+                // input message: 'Sudah selesai menggunakan React App? (Klik "Proceed" untuk mengakhiri)'             
+                sleep(sleepTime)
                 sh './jenkins/scripts/kill.sh' 
             }
         }
