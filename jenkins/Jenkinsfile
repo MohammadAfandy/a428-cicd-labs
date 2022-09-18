@@ -1,24 +1,32 @@
-node {
-    checkout scm
-    def image = docker.image('node:lts-buster-slim')
-    stage('Build') {
-        image.inside('-p 3000:3000') {
-            sh 'npm install'
+pipeline {
+    agent {
+        docker {
+            image 'node:lts-buster-slim'
         }
     }
-    stage('Test') {
-        image.inside('-p 3000:3000') {
-            sh './jenkins/scripts/test.sh'
+    stages {
+        stage('Build') {
+            steps {
+                sh 'npm install'
+            }
         }
-    }
-    stage('Manual Approval') {
-        input(message: 'Lanjutkan ke tahap Deploy?', ok: 'Deploy')
-    }
-    stage('Deploy') {
-        image.inside('-p 3000:3000') {
-            sh './jenkins/scripts/deliver.sh' 
-            sleep(1 * 60)
-            sh './jenkins/scripts/kill.sh'
+        stage('Test') {
+            steps {
+                sh './jenkins/scripts/test.sh'
+            }
+        }
+        stage('Manual Approval') {
+            steps {
+                input(message: 'Lanjutkan ke tahap Deploy?', ok: 'Deploy')
+            }
+        }
+        stage('Deploy') { 
+            steps {
+                sh './jenkins/scripts/deliver.sh' 
+                // input message: 'Sudah selesai menggunakan React App? (Klik "Proceed" untuk mengakhiri)'             
+                sleep(1 * 60)
+                sh './jenkins/scripts/kill.sh' 
+            }
         }
     }
 }
