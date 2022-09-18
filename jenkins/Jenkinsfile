@@ -1,13 +1,13 @@
 node {
     checkout scm
-    def container = docker.image('node:lts-buster-slim').run('-p 3000:3000')
+    def container = docker.image('node:lts-buster-slim').inside('-p 3000:3000')
     stage('Build') {
-        container.inside {
+        container {
             sh 'npm install'
         }
     }
     stage('Test') {
-        container.inside {
+        container {
             sh './jenkins/scripts/test.sh'
         }
     }
@@ -15,7 +15,7 @@ node {
         input(message: 'Lanjutkan ke tahap Deploy?', ok: 'Deploy')
     }
     stage('Deploy') {
-        container.inside {
+        container {
             sh './jenkins/scripts/deliver.sh' 
             sleep(1 * 60)
             sh './jenkins/scripts/kill.sh'
