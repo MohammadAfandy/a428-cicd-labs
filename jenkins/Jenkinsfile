@@ -1,6 +1,6 @@
 node {
     checkout scm
-    def container = docker.image('node:lts-buster-slim').inside('-p 3000:3000')
+    def container = docker.image('node:lts-buster-slim').run('-p 3000:3000')
     stage('Build') {
         container {
             sh 'npm install'
